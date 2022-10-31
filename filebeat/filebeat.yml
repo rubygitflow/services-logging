@@ -1,6 +1,7 @@
 filebeat:
   inputs:
     - type: log
+      scan_frequency: 10s
       json:
         message_key: message
         keys_under_root: true
@@ -11,6 +12,5 @@ filebeat:
 setup:
   kibana:
     host: "http://kibana:5601"
-output:
-  elasticsearch:
-    hosts: "http://elasticsearch:9200"
+output.logstash:
+    hosts: "logstash:5044"

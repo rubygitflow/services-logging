@@ -11,9 +11,10 @@ services:
     volumes:
       - rabbitmq:/var/lib/rabbitmq
   filebeat:
-    image: jiapinai/docker.elastic.co.beats.filebeat-oss:7.7.1
+    image: elastic/filebeat:7.17.7
     container_name: filebeat
     depends_on:
+      - logstash
       - elasticsearch
     volumes:
       - filebeat:/usr/share/filebeat/data
@@ -22,13 +23,21 @@ services:
       - /home/itarchitect/Work/Ruby/auth_microservice/log/:/var/log/auth:ro
       - /home/itarchitect/Work/Ruby/geocoder_microservice/log/:/var/log/geocoder:ro
   elasticsearch:
-    image: zhangguanzhang/docker.elastic.co.elasticsearch.elasticsearch-oss:7.7.1
+    image: elasticsearch:7.17.7
     container_name: elasticsearch
     volumes:
       - elasticsearch:/usr/share/elasticsearch/data
       - ./elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+  logstash:
+    image: logstash:7.17.7
+    container_name: logstash
+    depends_on:
+      - elasticsearch
+    volumes:
+      - logstash:/usr/share/logstash/data
+      - ./logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf
   kibana:
-    image: zhangguanzhang/docker.elastic.co.kibana.kibana-oss:7.7.1
+    image: kibana:7.17.7
     container_name: kibana
     depends_on:
       - elasticsearch
@@ -40,3 +49,4 @@ volumes:
   rabbitmq:
   filebeat:
   elasticsearch:
+  logstash:
